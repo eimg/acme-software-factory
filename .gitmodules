@@ -1,0 +1,21 @@
+[submodule "acme-identity"]
+	path = acme-identity
+	url = https://github.com/eimg/acme-identity.git
+[submodule "primer"]
+	path = primer
+	url = https://github.com/eimg/primer.git
+[submodule "prelude"]
+	path = prelude
+	url = https://github.com/eimg/prelude.git
+[submodule "helix"]
+	path = helix
+	url = https://github.com/eimg/helix.git
+[submodule "acme-issues"]
+	path = acme-issues
+	url = https://github.com/eimg/acme-issues.git
+[submodule "acme-projects"]
+	path = acme-projects
+	url = https://github.com/eimg/acme-projects.git
+[submodule "acme-todo"]
+	path = acme-todo
+	url = https://github.com/eimg/acme-todo.git

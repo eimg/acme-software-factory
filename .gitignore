@@ -1,0 +1,21 @@
+.DS_Store
+
+# Local target workspaces are deliberately outside the orchestration repository.
+workspace/
+
+# Root-local environment and runtime state.
+.env
+.env.*
+!.env.example
+*.log
+
+# Helix state if the root is ever used for local experiments.
+.helix/.env
+.helix/runs/
+.helix/runs.db*
+.helix/pr-reviews.db*
+
+# Editor and package-manager state.
+.idea/
+.vscode/
+node_modules/

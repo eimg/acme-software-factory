@@ -15,7 +15,7 @@ usage() {
   cat <<'EOF'
 Key component and port order:
   Identity 8316 -> Primer 8317 -> Prelude 8318 -> Helix 8319
-  -> Issues 8320 -> Projects 8321
+  -> Issues 8320 -> Projects 8321 -> Observability 8322
 
 Usage:
   ./start-acme.sh
@@ -197,6 +197,7 @@ echo "  Primer:   $PRIMER_AUTH_PROVIDER"
 echo "  Prelude:  $PRELUDE_AUTH_PROVIDER"
 echo "  Issues:   $AUTH_MODE"
 echo "  Projects: $AUTH_MODE"
+echo "  Observer: $AUTH_MODE"
 if [[ "$AUTH_MODE" == "off" ]]; then
   echo "  Purpose:  feature testing without sign-in"
 else
@@ -224,6 +225,10 @@ start_service "Acme Projects" "acme-projects" "http://127.0.0.1:8321/api/health"
   "ACME_AUTH_MODE=$AUTH_MODE" \
   "ACME_IDENTITY_URL=$IDENTITY_URL"
 
+start_service "Acme Observability" "acme-obs" "http://127.0.0.1:8322/api/health" \
+  "ACME_AUTH_MODE=$AUTH_MODE" \
+  "ACME_IDENTITY_URL=$IDENTITY_URL"
+
 echo
 echo "Acme services are ready:"
 echo "  Identity  $IDENTITY_URL"
@@ -232,6 +237,7 @@ echo "  Prelude   http://127.0.0.1:8318"
 echo "  Helix     http://127.0.0.1:8319  (not launched; run inside target repo)"
 echo "  Issues    http://127.0.0.1:8320"
 echo "  Projects  http://127.0.0.1:8321"
+echo "  Observer  http://127.0.0.1:8322"
 echo
 echo "Press Ctrl-C to stop all services."
 

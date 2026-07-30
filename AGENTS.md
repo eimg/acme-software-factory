@@ -16,6 +16,7 @@ This repository is the orchestration layer for a suite of independent Git reposi
 - **Helix** owns agent orchestration, target-repository execution, and independent PR-control evidence. It must remain provider- and tracker-replaceable.
 - **Acme Issues** owns concrete issues, implementation triggering, local PR state, review evidence, and the human merge boundary.
 - **Acme Projects** owns exploratory collaboration before work becomes an issue. It hands work to Issues and must not trigger Helix directly.
+- **Acme Observability** owns the optional read-only operational projection. It pulls allowlisted facts through public APIs and must never become a source dependency or workflow authority.
 - **Acme Todo** is a disposable target, not a suite dependency.
 - **`workspace/`** is local scratch space and must never be tracked by the root repository.
 
@@ -32,7 +33,7 @@ This repository is the orchestration layer for a suite of independent Git reposi
 
 ## Suite invariants
 
-- Key port order is Identity `8316`, Primer `8317`, Prelude `8318`, Helix `8319`, Issues `8320`, Projects `8321`.
+- Key port order is Identity `8316`, Primer `8317`, Prelude `8318`, Helix `8319`, Issues `8320`, Projects `8321`, Observability `8322`.
 - Helix is launched from a target repository and is intentionally omitted from `start-acme.sh`.
 - Acme Todo uses `8331` and is intentionally not counted as a key platform component.
 - `ACME_AUTH_MODE=off` is for frictionless feature testing. `local` is for shared human sessions, permission enforcement, and service-token testing.

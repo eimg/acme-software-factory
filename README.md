@@ -18,6 +18,7 @@ The diagram is the broader direction, not a claim that every loop is automated t
 | [`helix`](https://github.com/eimg/helix) | 8319 | Independent agent workflow and PR-control plane. It runs inside a target repository. |
 | [`acme-issues`](https://github.com/eimg/acme-issues) | 8320 | Local issue, implementation handoff, pull-request evidence, and human merge surface. |
 | [`acme-projects`](https://github.com/eimg/acme-projects) | 8321 | Local feature-exploration board that hands ready work to Acme Issues. |
+| [`acme-obs`](https://github.com/eimg/acme-obs) | 8322 | Optional read-only operational view across suite workflows and source health. |
 | [`acme-todo`](https://github.com/eimg/acme-todo) | 8331 | Disposable target application used to exercise Helix and the surrounding workflow. |
 
 The products are deliberately not one application. Primer, Prelude, and Helix remain useful without the Acme suite. Their integrations use replaceable HTTP/auth seams rather than imports from sibling repositories. The `acme-*` services provide local alternatives to external identity, project, and issue platforms and may integrate more closely.
@@ -29,7 +30,7 @@ There are two related paths:
 1. **New project:** optional Primer evidence → Prelude inception → exported bootstrap → Helix creates and initializes a target workspace.
 2. **Existing project:** Acme Projects exploration → deliberate Acme Issues handoff → Helix implementation in the target repository → independent review evidence → human merge.
 
-Acme Identity is cross-cutting rather than another step in either path. It supplies shared human sessions and narrowly scoped machine credentials when suite authentication is enabled.
+Acme Identity is cross-cutting rather than another step in either path. It supplies shared human sessions and narrowly scoped machine credentials when suite authentication is enabled. Acme Observability is also cross-cutting and optional: it pulls allowlisted operational facts without becoming a workflow dependency or source of truth.
 
 Acme Projects does not call Helix directly. A ready card creates a non-triggering Acme Issues issue; a human starts implementation through the configured Issues trigger. Helix reports lifecycle and review evidence back through the service boundaries.
 
@@ -68,7 +69,7 @@ Requirements:
 Install each product independently:
 
 ```bash
-for project in acme-identity primer prelude helix acme-issues acme-projects acme-todo; do
+for project in acme-identity primer prelude helix acme-issues acme-projects acme-obs acme-todo; do
   npm --prefix "$project" install
 done
 ```
@@ -91,7 +92,7 @@ On an interactive terminal it offers two modes:
 The launcher starts services in dependency order and waits for each health check:
 
 ```text
-Identity 8316 → Primer 8317 → Prelude 8318 → Issues 8320 → Projects 8321
+Identity 8316 → Primer 8317 → Prelude 8318 → Issues 8320 → Projects 8321 → Observability 8322
 ```
 
 Press `Ctrl-C` to stop every service started by the script. For automation, bypass the menu explicitly:

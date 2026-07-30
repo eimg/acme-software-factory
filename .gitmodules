@@ -19,3 +19,6 @@
 [submodule "acme-todo"]
 	path = acme-todo
 	url = https://github.com/eimg/acme-todo.git
+[submodule "acme-obs"]
+	path = acme-obs
+	url = https://github.com/eimg/acme-obs.git

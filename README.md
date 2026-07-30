@@ -105,11 +105,12 @@ ACME_AUTH_MODE=local ./start-acme.sh
 Before the first local-auth run, provision the suite's scoped machine credentials:
 
 ```bash
-npm --prefix acme-identity run provision:suite-auth
-./start-acme.sh
+./start-acme.sh --provision-auth
 ```
 
-The provisioner writes tokens only to ignored local environment files in their intended consumers. Do not commit those files.
+In an interactive local-mode start, the launcher also detects missing credentials and offers to provision them. Non-interactive local startup fails early with the provisioning command when credentials are missing. Ordinary startup never rotates valid tokens; use `--provision-auth` deliberately when credentials expire, are revoked, or need rotation.
+
+The provisioner writes tokens only to ignored local environment files in their intended consumers. It rotates all suite service tokens, so run it before starting services and restart every consumer afterward. Do not commit those files.
 
 ### Why Helix is not started by the launcher
 

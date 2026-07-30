@@ -6,9 +6,11 @@ ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 AUTH_MODE="${ACME_AUTH_MODE:-}"
 IDENTITY_URL="${ACME_IDENTITY_URL:-http://127.0.0.1:8316}"
 START_TIMEOUT="${ACME_START_TIMEOUT:-30}"
+PROVISION_AUTH=0
 
 PIDS=()
 NAMES=()
+MISSING_AUTH=()
 CLEANING_UP=0
 
 usage() {
@@ -18,7 +20,11 @@ Key component and port order:
   -> Issues 8320 -> Projects 8321 -> Observability 8322
 
 Usage:
-  ./start-acme.sh
+  ./start-acme.sh [--provision-auth]
+
+Options:
+  --provision-auth      Provision or rotate scoped suite service tokens before startup
+  -h, --help            Show this help
 
 Environment:
   ACME_AUTH_MODE       Suite mode: off | local (interactive menu when unset on a terminal)
@@ -29,8 +35,9 @@ Environment:
   PRIMER_AUTH_URL       Primer auth provider URL (default: identity URL)
   ACME_START_TIMEOUT   Seconds to wait for each health check (default: 30)
 
-Before the first local-auth run, provision scoped machine credentials with:
-  (cd acme-identity && npm run provision:suite-auth)
+In local mode, missing service credentials trigger an interactive provisioning
+prompt. Non-interactive startup fails with the exact provisioning command instead.
+Use --provision-auth to deliberately provision or rotate credentials.
 
 This launcher skips Helix because it runs inside a target repository.
 Press Ctrl-C to stop every service started by this script.
@@ -63,14 +70,26 @@ EOF
   done
 }
 
-if [[ "${1:-}" == "--help" || "${1:-}" == "-h" ]]; then
-  usage
-  exit 0
-fi
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --provision-auth)
+      PROVISION_AUTH=1
+      ;;
+    --help|-h)
+      usage
+      exit 0
+      ;;
+    *)
+      echo "Unknown option: $1" >&2
+      usage >&2
+      exit 2
+      ;;
+  esac
+  shift
+done
 
-if [[ $# -ne 0 ]]; then
-  usage >&2
-  exit 2
+if [[ "$PROVISION_AUTH" -eq 1 && -z "$AUTH_MODE" ]]; then
+  AUTH_MODE="local"
 fi
 
 if [[ -z "$AUTH_MODE" ]]; then
@@ -84,6 +103,11 @@ fi
 
 if [[ "$AUTH_MODE" != "local" && "$AUTH_MODE" != "off" ]]; then
   echo "ACME_AUTH_MODE must be 'local' or 'off' (got '$AUTH_MODE')." >&2
+  exit 2
+fi
+
+if [[ "$PROVISION_AUTH" -eq 1 && "$AUTH_MODE" != "local" ]]; then
+  echo "--provision-auth requires ACME_AUTH_MODE=local (or an unset mode)." >&2
   exit 2
 fi
 
@@ -101,12 +125,83 @@ if ! [[ "$START_TIMEOUT" =~ ^[1-9][0-9]*$ ]]; then
   exit 2
 fi
 
-for command_name in node npm curl pgrep; do
+for command_name in node npm curl pgrep awk; do
   if ! command -v "$command_name" >/dev/null 2>&1; then
     echo "Required command not found: $command_name" >&2
     exit 1
   fi
 done
+
+env_has_value() {
+  local file="$1"
+  local key="$2"
+  [[ -f "$file" ]] && awk -F= -v expected="$key" '
+    $1 == expected {
+      value = substr($0, index($0, "=") + 1)
+      if (length(value) > 0) found = 1
+    }
+    END { exit found ? 0 : 1 }
+  ' "$file"
+}
+
+check_suite_auth() {
+  local spec
+  local file
+  local key
+  MISSING_AUTH=()
+  for spec in \
+    "acme-projects/.env:ACME_ISSUES_TOKEN" \
+    "acme-issues/.env:ACME_HELIX_TOKEN" \
+    "acme-issues/.env:ACME_PROJECTS_TOKEN" \
+    "acme-todo/.helix/.env:HELIX_ISSUES_TOKEN" \
+    "acme-todo/.helix/.env:HELIX_PRELUDE_TOKEN" \
+    "acme-obs/.env:ACME_OBS_PRELUDE_TOKEN" \
+    "acme-obs/.env:ACME_OBS_ISSUES_TOKEN" \
+    "acme-obs/.env:ACME_OBS_PROJECTS_TOKEN" \
+    "acme-obs/.env:ACME_OBS_HELIX_TOKEN"
+  do
+    file="${spec%%:*}"
+    key="${spec#*:}"
+    if ! env_has_value "$ROOT_DIR/$file" "$key"; then
+      MISSING_AUTH+=("$file:$key")
+    fi
+  done
+  [[ ${#MISSING_AUTH[@]} -eq 0 ]]
+}
+
+provision_suite_auth() {
+  if [[ ! -d "$ROOT_DIR/acme-identity/node_modules" ]]; then
+    echo "Dependencies are not installed for Acme Identity. Run npm install in acme-identity first." >&2
+    exit 1
+  fi
+  echo "Provisioning scoped suite credentials..."
+  (
+    cd "$ROOT_DIR/acme-identity"
+    npm run provision:suite-auth
+  )
+}
+
+if [[ "$AUTH_MODE" == "local" ]]; then
+  if [[ "$PROVISION_AUTH" -eq 1 ]]; then
+    provision_suite_auth
+  elif ! check_suite_auth; then
+    echo "Missing local-auth credentials:"
+    for missing in "${MISSING_AUTH[@]}"; do
+      echo "  $missing"
+    done
+    if [[ -t 0 ]]; then
+      read -r -p "Provision scoped suite credentials now? [Y/n] " provision_choice
+      case "${provision_choice:-y}" in
+        y|Y|yes|Yes|YES) provision_suite_auth ;;
+        *) echo "Local startup cancelled; credentials were not changed." >&2; exit 2 ;;
+      esac
+    else
+      echo "Provision them before non-interactive local startup:" >&2
+      echo "  ./start-acme.sh --provision-auth" >&2
+      exit 2
+    fi
+  fi
+fi
 
 terminate_tree() {
   local parent_pid="$1"

@@ -2,6 +2,13 @@
 
 This repository is the orchestration layer for a suite of independent Git repositories. The root owns cross-project documentation, the local launcher, diagrams, and pinned submodule commits. Product implementation belongs in the relevant submodule.
 
+## Architecture stance
+
+- Treat Acme as an executable reference architecture, not an all-inclusive platform or a universal organizational blueprint.
+- Preserve local-first operation, independently useful products, explicit ownership, and replaceable public contracts. A production adaptation may be hosted or distributed without weakening those boundaries.
+- Prefer a focused working concept that experts can inspect and adapt over speculative breadth intended to cover every organization.
+- Do not describe a component as merely a demo or toy; each product should credibly demonstrate its responsibility while remaining clear about current scope.
+
 ## Read first
 
 - [`README.md`](./README.md) — product map, boundaries, clone workflow, and launcher usage.
@@ -17,6 +24,7 @@ This repository is the orchestration layer for a suite of independent Git reposi
 - **Acme Issues** owns concrete issues, implementation triggering, local PR state, review evidence, and the human merge boundary.
 - **Acme Projects** owns exploratory collaboration before work becomes an issue. It hands work to Issues and must not trigger Helix directly.
 - **Acme Observability** owns the optional read-only operational projection. It pulls allowlisted facts through public APIs and must never become a source dependency or workflow authority.
+- **Acme Steering** owns the optional local decision inbox, delegation policies, escalation, and human-steering record. Source products retain domain authority and their existing manual workflows; Steering is at inception and has no runtime yet.
 - **Acme Todo** is a disposable target, not a suite dependency.
 - **`workspace/`** is local scratch space and must never be tracked by the root repository.
 
@@ -33,8 +41,9 @@ This repository is the orchestration layer for a suite of independent Git reposi
 
 ## Suite invariants
 
-- Key port order is Identity `8316`, Primer `8317`, Prelude `8318`, Helix `8319`, Issues `8320`, Projects `8321`, Observability `8322`.
+- Key port order is Identity `8316`, Primer `8317`, Prelude `8318`, Helix `8319`, Issues `8320`, Projects `8321`, Observability `8322`, with Steering reserving `8323` for its future runtime.
 - Helix is launched from a target repository and is intentionally omitted from `start-acme.sh`.
+- Steering is intentionally omitted from `start-acme.sh` until it has a runnable service and documented health behavior.
 - Acme Todo uses `8331` and is intentionally not counted as a key platform component.
 - `ACME_AUTH_MODE=off` is for frictionless feature testing. `local` is for shared human sessions, permission enforcement, and service-token testing.
 - Independent products must retain standalone auth/runtime defaults or replaceable adapters.

@@ -1,12 +1,14 @@
 # Acme Software Factory
 
-Acme Software Factory is a local-first development testbed made from independent products that cover identity, organizational knowledge, project inception, agent-driven implementation, issue and review management, and feature exploration.
+Acme Software Factory is a local-first, executable reference architecture made from independent products that cover identity, organizational knowledge, project inception, agent-driven implementation, issue and review management, feature exploration, observability, and human steering. It demonstrates practical working concepts that subject-matter experts can inspect, adapt, and selectively carry into systems tailored to their organizations; it is not an all-inclusive platform or a universal prescription.
 
 This repository is the suite entrypoint. It contains the shared launcher and pins compatible versions of each product as a Git submodule. Every subproject keeps its own repository, history, releases, and standalone development workflow.
 
 ![Agentic software development system](./omni-loop.png)
 
 The diagram is the broader direction, not a claim that every loop is automated today. The current suite focuses on inspectable local workflows with explicit human handoffs.
+
+The architecture deliberately favors independently runnable products, explicit ownership boundaries, and replaceable integration contracts. Local operation is the default way to explore and verify the system, not a requirement that every derived production deployment run on one machine.
 
 ## Repository structure
 
@@ -19,6 +21,7 @@ The diagram is the broader direction, not a claim that every loop is automated t
 | [`acme-issues`](https://github.com/eimg/acme-issues) | 8320 | Local issue, implementation handoff, pull-request evidence, and human merge surface. |
 | [`acme-projects`](https://github.com/eimg/acme-projects) | 8321 | Local feature-exploration board that hands ready work to Acme Issues. |
 | [`acme-obs`](https://github.com/eimg/acme-obs) | 8322 | Optional read-only operational view across suite workflows and source health. |
+| [`acme-steering`](https://github.com/eimg/acme-steering) | 8323 (reserved) | Optional local decision inbox and policy-guided human-steering coordinator; currently at product inception. |
 | [`acme-todo`](https://github.com/eimg/acme-todo) | 8331 | Disposable target application used to exercise Helix and the surrounding workflow. |
 
 The products are deliberately not one application. Primer, Prelude, and Helix remain useful without the Acme suite. Their integrations use replaceable HTTP/auth seams rather than imports from sibling repositories. The `acme-*` services provide local alternatives to external identity, project, and issue platforms and may integrate more closely.
@@ -30,7 +33,7 @@ There are two related paths:
 1. **New project:** optional Primer evidence → Prelude inception → exported bootstrap → Helix creates and initializes a target workspace.
 2. **Existing project:** Acme Projects exploration → deliberate Acme Issues handoff → Helix implementation in the target repository → independent review evidence → human merge.
 
-Acme Identity is cross-cutting rather than another step in either path. It supplies shared human sessions and narrowly scoped machine credentials when suite authentication is enabled. Acme Observability is also cross-cutting and optional: it pulls allowlisted operational facts without becoming a workflow dependency or source of truth.
+Acme Identity is cross-cutting rather than another step in either path. It supplies shared human sessions and narrowly scoped machine credentials when suite authentication is enabled. Acme Observability is also cross-cutting and optional: it pulls allowlisted operational facts without becoming a workflow dependency or source of truth. Acme Steering is the optional human-decision and delegated-automation layer; when it is absent, the existing manual product workflows remain unchanged.
 
 Acme Projects does not call Helix directly. A ready card creates a non-triggering Acme Issues issue; a human starts implementation through the configured Issues trigger. Helix reports lifecycle and review evidence back through the service boundaries.
 
@@ -73,6 +76,8 @@ for project in acme-identity primer prelude helix acme-issues acme-projects acme
   npm --prefix "$project" install
 done
 ```
+
+`acme-steering` currently contains inception documents only and has no runtime dependencies to install.
 
 Each subproject README documents its standalone modes, provider configuration, data, and verification commands.
 

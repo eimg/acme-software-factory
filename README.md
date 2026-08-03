@@ -21,7 +21,7 @@ The architecture deliberately favors independently runnable products, explicit o
 | [`acme-issues`](https://github.com/eimg/acme-issues) | 8320 | Local issue, implementation handoff, pull-request evidence, and human merge surface. |
 | [`acme-projects`](https://github.com/eimg/acme-projects) | 8321 | Local feature-exploration board that hands ready work to Acme Issues. |
 | [`acme-obs`](https://github.com/eimg/acme-obs) | 8322 | Optional read-only operational view across suite workflows and source health. |
-| [`acme-steering`](https://github.com/eimg/acme-steering) | 8323 (reserved) | Optional local decision inbox and policy-guided human-steering coordinator; currently at product inception. |
+| [`acme-steering`](https://github.com/eimg/acme-steering) | 8323 | Optional local decision inbox and policy-guided human-steering coordinator. |
 | [`acme-todo`](https://github.com/eimg/acme-todo) | 8331 | Disposable target application used to exercise Helix and the surrounding workflow. |
 
 The products are deliberately not one application. Primer, Prelude, and Helix remain useful without the Acme suite. Their integrations use replaceable HTTP/auth seams rather than imports from sibling repositories. The `acme-*` services provide local alternatives to external identity, project, and issue platforms and may integrate more closely.
@@ -34,6 +34,8 @@ There are two related paths:
 2. **Existing project:** Acme Projects exploration → deliberate Acme Issues handoff → Helix implementation in the target repository → independent review evidence → human merge.
 
 Acme Identity is cross-cutting rather than another step in either path. It supplies shared human sessions and narrowly scoped machine credentials when suite authentication is enabled. Acme Observability is also cross-cutting and optional: it pulls allowlisted operational facts without becoming a workflow dependency or source of truth. Acme Steering is the optional human-decision and delegated-automation layer; when it is absent, the existing manual product workflows remain unchanged.
+
+The first Steering adapter slice is admin-operated and accepts optional, best-effort lifecycle notifications from Prelude, Helix, Issues, and Projects. Informational events enter its local Activity journal; actionable events synchronize decision cases by source revision. Administrator approval can invoke four narrow product-owned actions—Prelude export, Projects submission, Issues triggering, and Helix recovery—through scoped credentials and authoritative receipts. Direct sibling actions still reconcile the case. Risk assessment and workflow-owner routing are deliberately deferred.
 
 Acme Projects does not call Helix directly. A ready card creates a non-triggering Acme Issues issue; a human starts implementation through the configured Issues trigger. Helix reports lifecycle and review evidence back through the service boundaries.
 
@@ -72,12 +74,10 @@ Requirements:
 Install each product independently:
 
 ```bash
-for project in acme-identity primer prelude helix acme-issues acme-projects acme-obs acme-todo; do
+for project in acme-identity primer prelude helix acme-issues acme-projects acme-obs acme-steering acme-todo; do
   npm --prefix "$project" install
 done
 ```
-
-`acme-steering` currently contains inception documents only and has no runtime dependencies to install.
 
 Each subproject README documents its standalone modes, provider configuration, data, and verification commands.
 
@@ -97,7 +97,7 @@ On an interactive terminal it offers two modes:
 The launcher starts services in dependency order and waits for each health check:
 
 ```text
-Identity 8316 → Primer 8317 → Prelude 8318 → Issues 8320 → Projects 8321 → Observability 8322
+Identity 8316 → Primer 8317 → Prelude 8318 → Issues 8320 → Projects 8321 → Observability 8322 → Steering 8323
 ```
 
 Press `Ctrl-C` to stop every service started by the script. For automation, bypass the menu explicitly:

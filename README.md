@@ -112,7 +112,7 @@ The launcher starts services in dependency order and waits for each health check
 Identity 8316 → Primer 8317 → Prelude 8318 → Issues 8320 → Projects 8321 → Observability 8322 → Steering 8323
 ```
 
-The launcher supplies Prelude's default Steering URL. In Prelude, **Connections → Acme Steering** shows the effective endpoint, verifies both reachability and the product-bound notification credential, and permits a local URL override or a return to the startup setting. Credentials remain server-side.
+The launcher supplies default Steering URLs for Prelude, Issues, and Projects. Each of those products' **Connections → Acme Steering** screen shows the effective endpoint, verifies reachability and the product-bound notification credential, and permits a local URL override or a return to the startup setting. Helix is omitted from the launcher; configure Steering from the target repository's `.helix/.env` or Helix **Connections** (including **Use local suite default**). Credentials remain server-side.
 
 Press `Ctrl-C` to stop every service started by the script. For automation, bypass the menu explicitly:
 

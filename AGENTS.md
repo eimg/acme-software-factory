@@ -27,6 +27,7 @@ This repository is the orchestration layer for a suite of independent Git reposi
 - **Acme Steering** owns the optional local decision inbox, delegation policies, escalation, and human-steering record. Source products retain domain authority and their existing manual workflows.
 - Steering is admin-operated in the current first pass. Do not infer workflow ownership from current roles or resource fields; preserve stable product/resource seams for a later explicit ownership model.
 - Steering may invoke only explicit product-owned action keys through action-specific, trusted-origin credentials. The source product must reload live state, enforce its dedicated Steering permission and domain rules, validate the expected revision, and return the authoritative receipt. Source-backed risk is currently unassessed.
+- Steering returns every source-backed human disposition through a versioned decision notice. Each source product durably records and acknowledges it, but owns the deterministic workflow response; receipt of a decision must not be confused with application of an action.
 - **Acme Todo** is a disposable target, not a suite dependency.
 - **`workspace/`** is local scratch space and must never be tracked by the root repository.
 

@@ -35,7 +35,7 @@ There are two related paths:
 
 Acme Identity is cross-cutting rather than another step in either path. It supplies shared human sessions and narrowly scoped machine credentials when suite authentication is enabled. Acme Observability is also cross-cutting and optional: it pulls allowlisted operational facts without becoming a workflow dependency or source of truth. Acme Steering is the optional human-decision and delegated-automation layer; when it is absent, the existing manual product workflows remain unchanged.
 
-The first Steering adapter slice is admin-operated and accepts optional, best-effort lifecycle notifications from Prelude, Helix, Issues, and Projects. Informational events enter its local Activity journal; actionable events synchronize decision cases by source revision. Every human disposition is returned to the workflow owner's durable decision ledger and made visible through the owner's existing detail or comment surface without prescribing its next transition. Unavailable decision delivery can be retried explicitly with the same decision ID. Administrator approval can additionally invoke four narrow product-owned actions—Prelude export, Projects submission, Issues triggering, and Helix recovery—through scoped credentials and authoritative receipts. Direct sibling actions still reconcile the case. Risk assessment, background delivery retry, broader source-specific handling, and workflow-owner routing are deliberately deferred.
+The first Steering adapter slice is admin-operated and accepts optional, best-effort lifecycle notifications from Prelude, Helix, Issues, and Projects. Informational events enter its local Activity journal; actionable events synchronize decision cases by source revision. Every human disposition is returned to the workflow owner's durable decision ledger and made visible through the owner's existing detail or comment surface without prescribing its next transition. Unavailable decision delivery can be retried explicitly with the same decision ID. Administrator approval can additionally invoke four narrow product-owned actions—Prelude export, Projects submission, Issues triggering, and Helix recovery—through scoped credentials and authoritative receipts. The accepted, reversible Prelude export is the first complete policy-authorized automatic journey; Steering derives its bounded risk assessment, acts under a service principal, and records each lifecycle attempt. Other source actions remain human-authorized. Direct sibling actions still reconcile the case. Background delivery retry, broader risk and automation policies, and workflow-owner routing are deliberately deferred.
 
 Acme Projects does not call Helix directly. A ready card creates a non-triggering Acme Issues issue; a human starts implementation through the configured Issues trigger. Helix reports lifecycle and review evidence back through the service boundaries.
 
@@ -80,6 +80,16 @@ done
 ```
 
 Each subproject README documents its standalone modes, provider configuration, data, and verification commands.
+
+After building Prelude and Steering, verify their complete public-contract journey with isolated temporary state:
+
+```bash
+npm --prefix prelude run build
+npm --prefix acme-steering run build
+node scripts/verify-steering-journey.mjs
+```
+
+This accepts a Prelude inception, observes Steering classify and authorize the export, and verifies the product-owned export plus decision and attempt history. It does not use either product's database or internal modules.
 
 ## Start the local services
 

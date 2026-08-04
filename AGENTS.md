@@ -23,12 +23,12 @@ This repository is the orchestration layer for a suite of independent Git reposi
 - **Helix** owns agent orchestration, target-repository execution, and independent PR-control evidence. It must remain provider- and tracker-replaceable.
 - **Acme Issues** owns concrete issues, implementation triggering, local PR state, review evidence, and the human merge boundary.
 - **Acme Projects** owns exploratory collaboration before work becomes an issue. It hands work to Issues and must not trigger Helix directly.
-- **Acme Observability** owns the optional read-only operational projection. It pulls allowlisted facts through public APIs and must never become a source dependency or workflow authority.
-- **Acme Steering** owns the optional local decision inbox, delegation policies, escalation, and human-steering record. Source products retain domain authority and their existing manual workflows.
+- **Acme Observability** owns the cross-cutting read-only operational projection. It pulls allowlisted facts through public APIs and must never become a source dependency or workflow authority. In the reference launcher it is part of the composed suite; “optional” means detachable non-authority, not a skip flag.
+- **Acme Steering** owns the cross-cutting local decision inbox, delegation policies, escalation, and human-steering record. Source products retain domain authority and their existing manual workflows. The reference launcher starts Steering; products must still work when notifications and actions are unused.
 - Steering is admin-operated in the current first pass. Do not infer workflow ownership from current roles or resource fields; preserve stable product/resource seams for a later explicit ownership model.
 - Steering may invoke only explicit product-owned action keys through action-specific, trusted-origin credentials. The source product must reload live state, enforce its dedicated Steering permission and domain rules, validate the expected revision, and return the authoritative receipt. Steering derives bounded reference risk from action contracts and structured facts; unknown actions remain `unassessed`.
 - Steering returns every completed source-backed disposition through a versioned decision notice, including attributable policy-authorized approval. Each source product durably records and acknowledges it, but owns the deterministic workflow response; receipt of a decision must not be confused with application of an action.
-- **Acme Intel** owns the optional think-lab that studies allowlisted sibling experience and proposes versioned findings for human review. It is propose-only and non-authoritative; it must not mutate source products or silently publish into Primer.
+- **Acme Intel** owns the cross-cutting think-lab that studies allowlisted sibling experience and proposes versioned findings for human review. It is propose-only and non-authoritative; it must not mutate source products or silently publish into Primer. The reference launcher starts Intel; implementation and merge do not depend on it.
 - **Acme Todo** is a disposable target, not a suite dependency.
 - **`workspace/`** is local scratch space and must never be tracked by the root repository.
 
@@ -49,8 +49,10 @@ This repository is the orchestration layer for a suite of independent Git reposi
 - Helix is launched from a target repository and is intentionally omitted from `start-acme.sh`.
 - Acme Todo uses `8331` and is intentionally not counted as a key platform component.
 - `ACME_AUTH_MODE=off` is for frictionless feature testing. `local` is for shared human sessions, permission enforcement, and service-token testing.
+- Primer, Prelude, and Helix express the same suite choice as `*_AUTH_PROVIDER=standalone|acme-identity`. Keep mode and provider aligned; see the suite authentication glossary in [`README.md`](./README.md).
 - Independent products must retain standalone auth/runtime defaults or replaceable adapters.
 - Machine credentials may only be attached server-side to explicitly trusted destination origins.
+- Suite local-auth provisioning writes Helix-facing tokens into `acme-todo/.helix/.env` for the reference target; other Helix targets need the same values in their own `.helix/.env`.
 - Authorization must happen before restricted Primer material enters retrieval candidates, evidence, prompts, answers, or traces.
 
 ## Validation

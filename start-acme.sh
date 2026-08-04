@@ -36,12 +36,18 @@ profile_row() {
 
 usage() {
   cat <<'EOF'
-Managed service order:
+Managed service order (composed reference suite):
   Identity 8316 -> Primer 8317 -> Prelude 8318 -> Issues 8320
   -> Projects 8321 -> Observability 8322 -> Steering 8323 -> Intel 8324
 
+Observability, Steering, and Intel are included as the reference composition.
+Their product docs treat them as architecturally detachable (non-authoritative),
+not as launcher skip profiles.
+
 Target-scoped service:
   Helix 8319 runs separately from the repository it should change.
+  Suite local-auth provisioning writes Helix tokens into acme-todo/.helix/.env;
+  copy those values into another target's .helix/.env when exercising a different repo.
 
 Usage:
   ./start-acme.sh [--provision-auth]
@@ -51,7 +57,8 @@ Options:
   -h, --help            Show this help
 
 Environment:
-  ACME_AUTH_MODE       Suite mode: off | local (interactive menu when unset on a terminal)
+  ACME_AUTH_MODE       Suite mode: off | local (interactive menu when unset on a terminal;
+                       non-interactive default is local when unset)
   ACME_IDENTITY_URL    Identity URL (default: http://127.0.0.1:8316)
   PRELUDE_AUTH_PROVIDER Prelude auth adapter (acme-identity in local mode; standalone in off mode)
   PRELUDE_AUTH_URL      Prelude auth provider URL (default: identity URL)
@@ -59,6 +66,8 @@ Environment:
   PRIMER_AUTH_URL       Primer auth provider URL (default: identity URL)
   ACME_START_TIMEOUT   Seconds to wait for each health check (default: 30)
   NO_COLOR             Disable terminal colors when set
+
+See README.md "Suite authentication glossary" for ACME_AUTH_MODE vs *_AUTH_PROVIDER.
 
 In local mode, missing service credentials trigger an interactive provisioning
 prompt. Non-interactive startup fails with the exact provisioning command instead.

@@ -1,4 +1,11 @@
 #!/usr/bin/env node
+/**
+ * Verifies the Prelude accepted-export Steering journey over public HTTP only.
+ *
+ * Scope: accept inception → Steering automatic policy → prelude.package_accepted_export
+ * applied → export status + decision/attempt history. Does not cover Projects submit,
+ * Issues trigger, Helix recover, delivery retry, UI visibility, or ACME_AUTH_MODE=local.
+ */
 
 import assert from "node:assert/strict";
 import { mkdtempSync, rmSync } from "node:fs";

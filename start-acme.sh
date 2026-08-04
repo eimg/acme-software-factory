@@ -192,7 +192,15 @@ check_suite_auth() {
     "acme-steering/.env:ACME_STEERING_PRELUDE_TOKEN" \
     "acme-steering/.env:ACME_STEERING_HELIX_TOKEN" \
     "acme-steering/.env:ACME_STEERING_ISSUES_TOKEN" \
-    "acme-steering/.env:ACME_STEERING_PROJECTS_TOKEN"
+    "acme-steering/.env:ACME_STEERING_PROJECTS_TOKEN" \
+    "acme-intel/.env:ACME_INTEL_OBS_TOKEN" \
+    "acme-intel/.env:ACME_INTEL_TRUSTED_OBS_ORIGINS" \
+    "acme-intel/.env:ACME_INTEL_ISSUES_TOKEN" \
+    "acme-intel/.env:ACME_INTEL_TRUSTED_ISSUES_ORIGINS" \
+    "acme-intel/.env:ACME_INTEL_HELIX_TOKEN" \
+    "acme-intel/.env:ACME_INTEL_TRUSTED_HELIX_ORIGINS" \
+    "acme-intel/.env:ACME_INTEL_STEERING_TOKEN" \
+    "acme-intel/.env:ACME_INTEL_TRUSTED_STEERING_ORIGINS"
   do
     file="${spec%%:*}"
     key="${spec#*:}"

@@ -137,6 +137,8 @@ The suite uses one operator-facing mode and two adapter styles:
 | `*_AUTH_PROVIDER=standalone` | Primer, Prelude, Helix | Product-local principal (no Identity). Launcher sets this when suite mode is `off`. |
 | `*_AUTH_PROVIDER=acme-identity` | Primer, Prelude, Helix | Plain-HTTP Identity adapter. Launcher sets this when suite mode is `local`. |
 
+Issues and Projects also use a plain-HTTP Identity adapter under `ACME_AUTH_MODE` (no Identity package dependency). Observability, Steering, and Intel still resolve through the Identity client package in the suite checkout.
+
 `ACME_AUTH_MODE` and `*_AUTH_PROVIDER` are the same suite choice expressed for two adapter families. Keep them aligned: Identity-backed Prelude with standalone Helix is a common mixed-mode failure (for example Prelude catalog access returning `401`).
 
 Consumers authorize with **permission strings**, not fixed role names. Machine tokens are attached server-side only to explicitly trusted destination origins.

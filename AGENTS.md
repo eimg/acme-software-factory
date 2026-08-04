@@ -49,7 +49,7 @@ This repository is the orchestration layer for a suite of independent Git reposi
 - Helix is launched from a target repository and is intentionally omitted from `start-acme.sh`.
 - Acme Todo uses `8331` and is intentionally not counted as a key platform component.
 - `ACME_AUTH_MODE=off` is for frictionless feature testing. `local` is for shared human sessions, permission enforcement, and service-token testing.
-- Primer, Prelude, and Helix express the same suite choice as `*_AUTH_PROVIDER=standalone|acme-identity`. Keep mode and provider aligned; see the suite authentication glossary in [`README.md`](./README.md).
+- Primer, Prelude, and Helix express the same suite choice as `*_AUTH_PROVIDER=standalone|acme-identity`. Issues and Projects keep `ACME_AUTH_MODE` with a plain-HTTP Identity adapter. Keep mode and provider aligned; see the suite authentication glossary in [`README.md`](./README.md).
 - Independent products must retain standalone auth/runtime defaults or replaceable adapters.
 - Machine credentials may only be attached server-side to explicitly trusted destination origins.
 - Suite local-auth provisioning writes Helix-facing tokens into `acme-todo/.helix/.env` for the reference target; other Helix targets need the same values in their own `.helix/.env`.

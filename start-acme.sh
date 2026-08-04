@@ -38,7 +38,7 @@ usage() {
   cat <<'EOF'
 Managed service order:
   Identity 8316 -> Primer 8317 -> Prelude 8318 -> Issues 8320
-  -> Projects 8321 -> Observability 8322 -> Steering 8323
+  -> Projects 8321 -> Observability 8322 -> Steering 8323 -> Intel 8324
 
 Target-scoped service:
   Helix 8319 runs separately from the repository it should change.
@@ -330,6 +330,7 @@ profile_row "Issues" "$AUTH_MODE"
 profile_row "Projects" "$AUTH_MODE"
 profile_row "Observer" "$AUTH_MODE"
 profile_row "Steering" "$AUTH_MODE"
+profile_row "Intel" "$AUTH_MODE"
 if [[ "$AUTH_MODE" == "off" ]]; then
   profile_row "Purpose" "feature testing without sign-in"
 else
@@ -373,6 +374,14 @@ start_service "Acme Steering" "acme-steering" "http://127.0.0.1:8323/api/health"
   "ACME_STEERING_ISSUES_URL=http://127.0.0.1:8320" \
   "ACME_STEERING_PROJECTS_URL=http://127.0.0.1:8321"
 
+start_service "Acme Intel" "acme-intel" "http://127.0.0.1:8324/api/health" \
+  "ACME_AUTH_MODE=$AUTH_MODE" \
+  "ACME_IDENTITY_URL=$IDENTITY_URL" \
+  "ACME_INTEL_OBS_URL=http://127.0.0.1:8322" \
+  "ACME_INTEL_ISSUES_URL=http://127.0.0.1:8320" \
+  "ACME_INTEL_HELIX_URL=http://127.0.0.1:8319" \
+  "ACME_INTEL_STEERING_URL=http://127.0.0.1:8323"
+
 heading "Ready"
 profile_row "Identity" "$IDENTITY_URL"
 profile_row "Primer" "http://127.0.0.1:8317"
@@ -381,6 +390,7 @@ profile_row "Issues" "http://127.0.0.1:8320"
 profile_row "Projects" "http://127.0.0.1:8321"
 profile_row "Observer" "http://127.0.0.1:8322"
 profile_row "Steering" "http://127.0.0.1:8323"
+profile_row "Intel" "http://127.0.0.1:8324"
 
 heading "Target-scoped service"
 profile_row "Helix" "http://127.0.0.1:8319"

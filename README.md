@@ -1,6 +1,6 @@
 # Acme Software Factory
 
-Acme Software Factory is a local-first, executable reference architecture made from independent products that cover identity, organizational knowledge, project inception, agent-driven implementation, issue and review management, feature exploration, observability, and human steering. It demonstrates practical working concepts that subject-matter experts can inspect, adapt, and selectively carry into systems tailored to their organizations; it is not an all-inclusive platform or a universal prescription.
+Acme Software Factory is a local-first, executable reference architecture made from independent products that cover identity, organizational knowledge, project inception, agent-driven implementation, issue and review management, feature exploration, observability, human steering, and experience study. It demonstrates practical working concepts that subject-matter experts can inspect, adapt, and selectively carry into systems tailored to their organizations; it is not an all-inclusive platform or a universal prescription.
 
 This repository is the suite entrypoint. It contains the shared launcher and pins compatible versions of each product as a Git submodule. Every subproject keeps its own repository, history, releases, and standalone development workflow.
 
@@ -22,6 +22,7 @@ The architecture deliberately favors independently runnable products, explicit o
 | [`acme-projects`](https://github.com/eimg/acme-projects) | 8321 | Local feature-exploration board that hands ready work to Acme Issues. |
 | [`acme-obs`](https://github.com/eimg/acme-obs) | 8322 | Optional read-only operational view across suite workflows and source health. |
 | [`acme-steering`](https://github.com/eimg/acme-steering) | 8323 | Optional local decision inbox and policy-guided human-steering coordinator. |
+| [`acme-intel`](https://github.com/eimg/acme-intel) | 8324 | Optional think-lab that studies suite experience and proposes reviewed findings. |
 | [`acme-todo`](https://github.com/eimg/acme-todo) | 8331 | Disposable target application used to exercise Helix and the surrounding workflow. |
 
 The products are deliberately not one application. Primer, Prelude, and Helix remain useful without the Acme suite. Their integrations use replaceable HTTP/auth seams rather than imports from sibling repositories. The `acme-*` services provide local alternatives to external identity, project, and issue platforms and may integrate more closely.
@@ -33,9 +34,9 @@ There are two related paths:
 1. **New project:** optional Primer evidence → Prelude inception → exported bootstrap → Helix creates and initializes a target workspace.
 2. **Existing project:** Acme Projects exploration → deliberate Acme Issues handoff → Helix implementation in the target repository → independent review evidence → human merge.
 
-Acme Identity is cross-cutting rather than another step in either path. It supplies shared human sessions and narrowly scoped machine credentials when suite authentication is enabled. Acme Observability is also cross-cutting and optional: it pulls allowlisted operational facts without becoming a workflow dependency or source of truth. Acme Steering is the optional human-decision and delegated-automation layer; when it is absent, the existing manual product workflows remain unchanged.
+Acme Identity is cross-cutting rather than another step in either path. It supplies shared human sessions and narrowly scoped machine credentials when suite authentication is enabled. Acme Observability is also cross-cutting and optional: it pulls allowlisted operational facts without becoming a workflow dependency or source of truth. Acme Steering is the optional human-decision and delegated-automation layer; when it is absent, the existing manual product workflows remain unchanged. Acme Intel is the optional think-lab: it studies allowlisted experience from sibling products and proposes versioned findings for human review; when it is absent, the factory continues without study or improvement proposals.
 
-The cross-cutting products may project some of the same facts, but they have distinct purposes. **Observability** is the detailed operational view, including timelines, correlations, cost, bottlenecks, charts, and other analysis; **Steering** is the deliberately sparse authority inbox for decisions and interventions. **Primer** distributes governed organizational knowledge and evidence. A possible future **Acme Intel** would be an optional think-lab layer that studies versioned, outcome-linked experience and proposes fresh findings; reviewed findings may be published into Primer or proposed as policy and skill improvements, but Intel would not silently turn hypotheses into organizational truth. In short: Observability explains the factory, Steering governs it, Intel studies how to improve it, and Primer distributes what the organization has responsibly learned.
+The cross-cutting products may project some of the same facts, but they have distinct purposes. **Observability** is the detailed operational view, including timelines, correlations, cost, bottlenecks, charts, and other analysis; **Steering** is the deliberately sparse authority inbox for decisions and interventions; **Intel** studies versioned, outcome-linked experience and proposes fresh findings; **Primer** distributes governed organizational knowledge and evidence. Reviewed Intel findings may later be published into Primer or proposed as policy and skill improvements, but Intel does not silently turn hypotheses into organizational truth. In short: Observability explains the factory, Steering governs it, Intel studies how to improve it, and Primer distributes what the organization has responsibly learned.
 
 The first Steering adapter slice is admin-operated and accepts optional, best-effort lifecycle notifications from Prelude, Helix, Issues, and Projects. Informational events enter its local Activity journal; actionable events synchronize decision cases by source revision. Every completed source-backed disposition—human or policy-authorized—is returned to the workflow owner's durable decision ledger and made visible through the owner's existing detail or comment surface without prescribing its next transition. Unavailable decision delivery can be retried explicitly with the same decision ID. Approval can additionally invoke four narrow product-owned actions—Prelude export, Projects submission, Issues triggering, and Helix recovery—through scoped credentials and authoritative receipts. The accepted, reversible Prelude export is the first complete policy-authorized automatic journey; Steering derives its bounded risk assessment, acts under a service principal, and records each lifecycle attempt. Other source actions remain human-authorized. Direct sibling actions still reconcile the case. Background delivery retry, broader risk and automation policies, and workflow-owner routing are deliberately deferred.
 
@@ -76,7 +77,7 @@ Requirements:
 Install each product independently:
 
 ```bash
-for project in acme-identity primer prelude helix acme-issues acme-projects acme-obs acme-steering acme-todo; do
+for project in acme-identity primer prelude helix acme-issues acme-projects acme-obs acme-steering acme-intel acme-todo; do
   npm --prefix "$project" install
 done
 ```
@@ -109,10 +110,10 @@ On an interactive terminal it offers two modes:
 The launcher starts services in dependency order and waits for each health check:
 
 ```text
-Identity 8316 → Primer 8317 → Prelude 8318 → Issues 8320 → Projects 8321 → Observability 8322 → Steering 8323
+Identity 8316 → Primer 8317 → Prelude 8318 → Issues 8320 → Projects 8321 → Observability 8322 → Steering 8323 → Intel 8324
 ```
 
-The launcher supplies default Steering URLs for Prelude, Issues, and Projects. Each of those products' **Connections → Acme Steering** screen shows the effective endpoint, verifies reachability and the product-bound notification credential, and permits a local URL override or a return to the startup setting. Helix is omitted from the launcher; configure Steering from the target repository's `.helix/.env` or Helix **Connections** (including **Use local suite default**). Credentials remain server-side.
+The launcher supplies default Steering URLs for Prelude, Issues, and Projects, and default study-source URLs for Intel (Observability, Issues, Helix, and Steering). Each of those products' **Connections → Acme Steering** screen shows the effective endpoint, verifies reachability and the product-bound notification credential, and permits a local URL override or a return to the startup setting. Helix is omitted from the launcher; configure Steering from the target repository's `.helix/.env` or Helix **Connections** (including **Use local suite default**). Credentials remain server-side.
 
 Press `Ctrl-C` to stop every service started by the script. For automation, bypass the menu explicitly:
 

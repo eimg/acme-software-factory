@@ -25,3 +25,6 @@
 [submodule "acme-steering"]
 	path = acme-steering
 	url = https://github.com/eimg/acme-steering.git
+[submodule "acme-intel"]
+	path = acme-intel
+	url = https://github.com/eimg/acme-intel.git

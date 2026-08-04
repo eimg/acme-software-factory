@@ -28,6 +28,7 @@ This repository is the orchestration layer for a suite of independent Git reposi
 - Steering is admin-operated in the current first pass. Do not infer workflow ownership from current roles or resource fields; preserve stable product/resource seams for a later explicit ownership model.
 - Steering may invoke only explicit product-owned action keys through action-specific, trusted-origin credentials. The source product must reload live state, enforce its dedicated Steering permission and domain rules, validate the expected revision, and return the authoritative receipt. Steering derives bounded reference risk from action contracts and structured facts; unknown actions remain `unassessed`.
 - Steering returns every completed source-backed disposition through a versioned decision notice, including attributable policy-authorized approval. Each source product durably records and acknowledges it, but owns the deterministic workflow response; receipt of a decision must not be confused with application of an action.
+- **Acme Intel** owns the optional think-lab that studies allowlisted sibling experience and proposes versioned findings for human review. It is propose-only and non-authoritative; it must not mutate source products or silently publish into Primer.
 - **Acme Todo** is a disposable target, not a suite dependency.
 - **`workspace/`** is local scratch space and must never be tracked by the root repository.
 
@@ -44,7 +45,7 @@ This repository is the orchestration layer for a suite of independent Git reposi
 
 ## Suite invariants
 
-- Key port order is Identity `8316`, Primer `8317`, Prelude `8318`, Helix `8319`, Issues `8320`, Projects `8321`, Observability `8322`, Steering `8323`.
+- Key port order is Identity `8316`, Primer `8317`, Prelude `8318`, Helix `8319`, Issues `8320`, Projects `8321`, Observability `8322`, Steering `8323`, Intel `8324`.
 - Helix is launched from a target repository and is intentionally omitted from `start-acme.sh`.
 - Acme Todo uses `8331` and is intentionally not counted as a key platform component.
 - `ACME_AUTH_MODE=off` is for frictionless feature testing. `local` is for shared human sessions, permission enforcement, and service-token testing.
